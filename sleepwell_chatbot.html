@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Sleepwell ChatBot</title>
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.41.0.min.js"></script>
+	<style language="text/css">
+		input#wisdom {
+			padding: 4px;
+			font-size: 1em;
+			width: 400px
+		}
+
+		input::placeholder {
+			color: #ccc;
+			font-style: italic;
+		}
+
+		p.userRequest {
+			margin: 4px;
+			padding: 4px 10px 4px 10px;
+			border-radius: 4px;
+			min-width: 50%;
+			max-width: 85%;
+			float: left;
+			background-color: #7d7;
+		}
+
+		p.lexResponse {
+			margin: 4px;
+			padding: 4px 10px 4px 10px;
+			border-radius: 4px;
+			text-align: right;
+			min-width: 50%;
+			max-width: 85%;
+			float: right;
+			background-color: #bbf;
+			font-style: italic;
+		}
+
+        button.lexResponse {
+			margin: 4px;
+			padding: 4px 10px 4px 10px;
+			border-radius: 4px;
+			text-align: right;
+			min-width: 50%;
+			max-width: 85%;
+			float: right;
+			background-color: #bbf;
+			font-style: italic;
+		}
+
+		p.lexError {
+			margin: 4px;
+			padding: 4px 10px 4px 10px;
+			border-radius: 4px;
+			text-align: right;
+			min-width: 50%;
+			max-width: 85%;
+			float: right;
+			background-color: #f77;
+		}
+	</style>
+</head>
+
+<body>
+	<h1 style="text-align:  left">Sleepwell ChatBot</h1>
+	<p style="width: 400px">
+		Incorporate
+		<a href="https://aws.amazon.com/lex/" title="Amazon Lex (product)" target="_new">Amazon Lex</a> into your web pages.  Try it out.
+	</p>
+	<div id="conversation" style="width: 400px; height: 400px; border: 1px solid #ccc; background-color: #eee; padding: 4px; overflow: scroll"></div>
+	<form id="chatform" style="margin-top: 10px" onsubmit="return pushChat();">
+		<input type="text" id="wisdom" size="80" value="" placeholder="Write here...">
+	</form>
+	<script type="text/javascript">
+		// set the focus to the input box
+        // Initialize the Amazon Cognito credentials provider
+		AWS.config.region = 'ap-southeast-1'; // Region
+		AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+		// Provide your Pool Id here
+			IdentityPoolId: 'ap-southeast-1:3d92fd2f-50eb-44c2-9165-2d2866737bc6',
+		});
+
+        var lexruntime = new AWS.LexRuntime();
+		var lexUserId = 'chatbot-demo' + Date.now();
+        var currentIntent;
+		var sessionAttributes = {};
+
+
+		document.getElementById("wisdom").focus();
+        initChat();
+
+        function initChat() {
+            currentIntent = 'StartChat'
+            var params = {
+					botAlias: '$LATEST',
+					botName: 'BtoBBot',
+					inputText: 'StartChat',
+					userId: lexUserId,
+					sessionAttributes: sessionAttributes
+				};
+            lexruntime.postText(params, function(err, data) {
+					if (err) {
+						console.log(err, err.stack);
+					}
+					if (data) {
+						// capture the sessionAttributes for the next cycle
+						sessionAttributes = data.sessionAttributes;
+						// show response and/or error/dialog status
+						showResponse(data);
+					}
+		    });
+        }
+
+        function chatOptionsTapped(text, type){
+            // disable input to show we're sending it
+            var wisdomText = document.getElementById('wisdom');
+			var wisdom = wisdomText.value.trim();
+			wisdomText.value = '...';
+			wisdomText.locked = true;
+            
+            showRequest(text);
+            var input;
+            if (type == 'category'){
+                input = 'CategorySelected'
+            }
+            else{
+                input = 'SubCategorySelected'
+            }
+            var params = {
+					botAlias: '$LATEST',
+					botName: 'BtoBBot',
+					inputText: input,
+					userId: lexUserId,
+					sessionAttributes: sessionAttributes
+				};
+            lexruntime.postText(params, function(err, data) {
+					if (err) {
+						console.log(err, err.stack);
+					}
+					if (data) {
+						// capture the sessionAttributes for the next cycle
+						sessionAttributes = data.sessionAttributes;
+						// show response and/or error/dialog status
+						showResponse(data);
+					}
+                    // re-enable input
+					wisdomText.value = '';
+					wisdomText.locked = false;
+		    });
+        }
+
+        
+
+		function pushChat() {
+			// if there is text to be sent...
+			var wisdomText = document.getElementById('wisdom');
+			if (wisdomText && wisdomText.value && wisdomText.value.trim().length > 0) {
+
+				// disable input to show we're sending it
+				var wisdom = wisdomText.value.trim();
+				wisdomText.value = '...';
+				wisdomText.locked = true;
+
+                var input;
+                if (currentIntent == 'SleepwellGetName'){
+                    input = 'NameSelected'
+                }
+                else if (currentIntent == 'SleepwellGetCompanyName'){
+                    input = 'CompanySelected'
+                }
+                else if (currentIntent == 'SleepwellGetContactNumber'){
+                    input = 'ContactNumberSelected'
+                }
+                else if (currentIntent == 'SleepwellGetEmailId'){
+                    input = 'EmailSelected'
+                }
+                else if (currentIntent == 'SleepwellGetCity'){
+                    input = 'CitySelected'
+                }
+                else{
+                    input = 'StartChat'
+                }
+
+				// send it to the Lex runtime
+				var params = {
+					botAlias: '$LATEST',
+					botName: 'BtoBBot',
+					inputText: input,
+					userId: lexUserId,
+					sessionAttributes: sessionAttributes
+				};
+				showRequest(wisdom);
+				lexruntime.postText(params, function(err, data) {
+					if (err) {
+						console.log(err, err.stack);
+						showError('Error:  ' + err.message + ' (see console for details)')
+					}
+					if (data) {
+						// capture the sessionAttributes for the next cycle
+						sessionAttributes = data.sessionAttributes;
+						// show response and/or error/dialog status
+						showResponse(data);
+					}
+					// re-enable input
+					wisdomText.value = '';
+					wisdomText.locked = false;
+				});
+			}
+			// we always cancel form submission
+			return false;
+		}
+
+		function showRequest(daText) {
+			var conversationDiv = document.getElementById('conversation');
+			var requestPara = document.createElement("P");
+			requestPara.className = 'userRequest';
+			requestPara.appendChild(document.createTextNode(daText));
+			conversationDiv.appendChild(requestPara);
+			conversationDiv.scrollTop = conversationDiv.scrollHeight;
+		}
+
+		function showError(daText) {
+
+			var conversationDiv = document.getElementById('conversation');
+			var errorPara = document.createElement("P");
+			errorPara.className = 'lexError';
+			errorPara.appendChild(document.createTextNode(daText));
+			conversationDiv.appendChild(errorPara);
+			conversationDiv.scrollTop = conversationDiv.scrollHeight;
+		}
+
+		function showResponse(lexResponse) {
+            currentIntent = lexResponse.intentName;
+			var conversationDiv = document.getElementById('conversation');
+			var responsePara = document.createElement("P");
+            
+			responsePara.className = 'lexResponse';
+            
+			if (lexResponse.message) {
+                responsePara.innerHTML = lexResponse.message;
+				//responsePara.appendChild(document.createTextNode(lexResponse.message));
+				//responsePara.appendChild(document.createElement('br'));
+			}
+
+			conversationDiv.appendChild(responsePara);
+            if (lexResponse.intentName == 'StartChat'){
+                var categories = JSON.parse(lexResponse.sessionAttributes.categories)
+                console.log(categories)
+                var i;
+                for (i = 0; i < categories.length; i++){
+                    var optionsButton = document.createElement("Button");
+                    optionsButton.className = 'lexResponse';
+                    optionsButton.innerHTML = categories[i].name;
+                    optionsButton.id = 'category_' + categories[i].id;
+                    optionsButton.onclick = (function (category, type) {
+                                                    return function () {
+                                                        chatOptionsTapped(category, type);
+                                                        };
+                                                    })(categories[i].name, 'category');
+                    conversationDiv.appendChild(optionsButton);
+                }
+            }
+            else if (lexResponse.intentName == 'SleepwellGetSubCategories'){
+                var subCategories = JSON.parse(lexResponse.sessionAttributes.sub_categories)
+                console.log(subCategories)
+                var i;
+                for (i = 0; i < subCategories.length; i++){
+                    var optionsButton = document.createElement("Button");
+                    optionsButton.className = 'lexResponse';
+                    optionsButton.innerHTML = subCategories[i].name;
+                    optionsButton.id = 'subCategory_' + subCategories[i].id;
+                    optionsButton.onclick = (function (subCategory, type) {
+                                                    return function () {
+                                                        chatOptionsTapped(subCategory, type);
+                                                        };
+                                                    })(subCategories[i].name, 'subCategory');
+                    conversationDiv.appendChild(optionsButton);
+                }
+            }
+			conversationDiv.scrollTop = conversationDiv.scrollHeight;
+		}
+	</script>
+</body>
+
+</html>
