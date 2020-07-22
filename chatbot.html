@@ -28,7 +28,7 @@
   position: fixed;
   bottom: 50px;
   right: 50px;
-  background: #5A5EB9;
+  background: #0075bc;
   width: 80px;
   height: 80px;  
   border-radius: 50%;
@@ -78,7 +78,7 @@
   cursor:pointer;
 }
 .chat-box-header {
-  background: #5A5EB9;
+  background: #0075bc;
   height:70px;
   border-top-left-radius:5px;
   border-top-right-radius:5px; 
@@ -148,13 +148,14 @@
   box-shadow:none;
   border:none;
   border-radius:50%;
-  color:#5A5EB9;
+  color:#0075bc;
   width:35px;
   height:35px;  
 }
 .chat-logs {
   padding:15px; 
   height:470px;
+  /* width: 348px; */
   overflow-y:scroll;
 }
 
@@ -172,7 +173,7 @@
 
 .chat-logs::-webkit-scrollbar-thumb
 {
-	background-color: #5A5EB9;
+	background-color: #0075bc;
 }
 
 
@@ -206,7 +207,7 @@
   margin-left:10px; 
   position:relative;
   margin-bottom:20px;
-  border-radius:30px;
+  border-radius:15px;
 }
 .chat-msg {
   clear:both;    
@@ -214,14 +215,26 @@
 .chat-msg.self > .cm-msg-text {  
   float:right;
   margin-right:10px;
-  background: #5A5EB9;
+  background: #0075bc;
   color:white;
 }
-.cm-msg-button>ul>li {
+.cm-msg-button>ul>li{
   list-style:none;
   float:left;
-  width:100%;
+  margin: 0 10px 10px 0;
 }
+.cm-msg-button>ul>li a{
+  color: #101010;
+    background: #cccccc;
+    border-radius: 15px;
+    display: inline-block;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+.cm-msg-button>ul>li a:hover{
+    background: #fdb913;
+}
+
 .cm-msg-button {
     clear: both;
     margin-bottom: 70px;
@@ -239,12 +252,12 @@
       
     <div id="chat-circle" class="btn btn-raised">
             <div id="chat-overlay"></div>
-                <i class="material-icons">speaker_phone</i>
+                <i class="material-icons">chat</i>
         </div>
       
       <div class="chat-box">
         <div class="chat-box-header">
-          ChatBot
+          Support
           <span class="chat-box-toggle"><i class="material-icons">close</i></span>
         </div>
         <div class="chat-box-body">
@@ -256,7 +269,7 @@
         </div>
         <div class="chat-input">      
           <form>
-            <input type="text" id="chat-input" placeholder="Send a message..."/>
+            <input type="text" id="chat-input" placeholder="Type here ..."/>
           <button type="submit" class="chat-submit" id="chat-submit"><i class="material-icons">send</i></button>
           </form>      
         </div>
@@ -288,7 +301,7 @@
     str += "<div id='cm-msg-"+INDEX+"' class=\"chat-msg "+type+"\">";
     str += "          <span class=\"msg-avatar\">";
     //str += "            <img src=\"https:\/\/image.crisp.im\/avatar\/operator\/196af8cc-f6ad-4ef7-afd1-c45d5231387c\/240\/?1483361727745\">";
-    str += "            <img src=\"https:\/\/cdn1.iconfinder.com\/data\/icons\/ninja-things-1\/1772\/ninja-simple-512.png\">";
+    str += "            <img src=\"https:\/\/image.flaticon.com\/icons\/svg\/3135\/3135715.svg\">";
     str += "          <\/span>";
     str += "          <div class=\"cm-msg-text\">";
     str += msg;
@@ -305,12 +318,12 @@
   function generate_button_message(msg, buttons){    
     INDEX++;
     var btn_obj = buttons.map(function(button) {
-       return  "<li class=\"button\"><a href=\"javascript:;\" class=\"btn btn-primary chat-btn\" chat-value=\""+button.type+"\">"+button.name+"<\/a><\/li>";
+       return  "<li class=\"button\"><a href=\"javascript:;\" class=\"chat-btn\" chat-value=\""+button.type+"\">"+button.name+"<\/a><\/li>";
     }).join('');
     var str="";
     str += "<div id='cm-msg-"+INDEX+"' class=\"chat-msg user\">";
     str += "          <span class=\"msg-avatar\">";
-    str += "            <img src=\"https:\/\/www.pinclipart.com\/picdir\/middle\/205-2059398_blinkk-en-mac-app-store-ninja-icon-transparent.png\">";
+    str += "            <img src=\"https:\/\/image.flaticon.com\/icons\/svg\/3135/3135789.svg\">";
     str += "          <\/span>";
     str += "          <div class=\"cm-msg-text\">";
     str += msg;
