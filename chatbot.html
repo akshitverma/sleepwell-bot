@@ -26,7 +26,7 @@
 }
 #chat-circle {
   position: fixed;
-  bottom: 50px;
+  bottom: 30px;
   right: 50px;
   background: #0075bc;
   width: 80px;
@@ -64,7 +64,7 @@
   background: #efefef;
   position:fixed;
   right:30px;
-  bottom:50px;  
+  bottom:30px;  
   width:350px;
   max-width: 85vw;
   max-height:100vh;
@@ -77,8 +77,12 @@
   margin-right:15px;
   cursor:pointer;
 }
+.chat-box-toggle i {
+  color: #2474bc;
+}
 .chat-box-header {
-  background: #0075bc;
+  background: url('logo.svg') no-repeat 10% center #ffffff;
+  background-size: 50%;
   height:70px;
   border-top-left-radius:5px;
   border-top-right-radius:5px; 
@@ -86,7 +90,10 @@
   text-align:center;
   font-size:20px;
   padding-top:17px;
+  padding-left: 10px;
+  border-bottom: 3px solid #2474bc;
 }
+
 .chat-box-body {
   position: relative;  
   height:370px;  
@@ -107,7 +114,7 @@
   z-index: -1;   
 }
 #chat-input {
-  background: #f4f7f9;
+  background: #2574bc;
   width:100%; 
   position:relative;
   height:47px;  
@@ -119,7 +126,7 @@
   resize:none;
   outline:none;
   border:1px solid #ccc;
-  color:#888;
+  color:#ffffff;
   border-top:none;
   border-bottom-right-radius:5px;
   border-bottom-left-radius:5px;
@@ -148,7 +155,7 @@
   box-shadow:none;
   border:none;
   border-radius:50%;
-  color:#0075bc;
+  color:#ffffff;
   width:35px;
   height:35px;  
 }
@@ -209,6 +216,12 @@
   margin-bottom:20px;
   border-radius:15px;
 }
+.cm-msg-text a {
+  color: #0075bc;
+}
+.cm-msg-text a:hover {
+  color: #101010;
+}
 .chat-msg {
   clear:both;    
 }
@@ -224,8 +237,8 @@
   margin: 0 10px 10px 0;
 }
 .cm-msg-button>ul>li a{
-  color: #101010;
-    background: #cccccc;
+  color: #ffffff;
+    background: #454545;
     border-radius: 15px;
     display: inline-block;
     padding: 5px 10px;
@@ -245,8 +258,8 @@
 
 <body>
     <div id="center-text">
-        <h2>Sheelafoam</h2>
-        <p>Chatbot</p>
+        <h2>Nutrismartz</h2>
+        <p></p>
       </div> 
     <div id="body"> 
       
@@ -257,14 +270,13 @@
       
       <div class="chat-box">
         <div class="chat-box-header">
-          Support
           <span class="chat-box-toggle"><i class="material-icons">close</i></span>
         </div>
         <div class="chat-box-body">
           <div class="chat-box-overlay">   
           </div>
           <div class="chat-logs">
-           
+            <p style="color: #2474bc; font-size: 20px; text-align: center";>Welcome!</p>
           </div><!--chat-log -->
         </div>
         <div class="chat-input">      
@@ -274,24 +286,19 @@
           </form>      
         </div>
       </div>
-      
-      
-      
-      
     </div>
-    
     <script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-157cd5b220a5c80d4ff8e0e70ac069bffd87a61252088146915e8726e5d9f147.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js'></script>
 <script>
+  $("#chat-circle").toggle('scale');
+    $(".chat-box").toggle('scale');
+    
     $(function() {
   var INDEX = 0; 
   $("#chat-submit").click(function(e) {
     e.preventDefault();
     var msg = $("#chat-input").val(); 
-    if(msg.trim() == ''){
-      return false;
-    }
     pushChat(msg);
   })
   
@@ -318,7 +325,7 @@
   function generate_button_message(msg, buttons){    
     INDEX++;
     var btn_obj = buttons.map(function(button) {
-       return  "<li class=\"button\"><a href=\"javascript:;\" class=\"chat-btn\" chat-value=\""+button.type+"\">"+button.name+"<\/a><\/li>";
+       return  "<li class=\"button\"><a href=\"javascript:;\" class=\"chat-btn\" chat-value=\""+button.type+"\" chat-label=\""+button.label+"\">"+button.name+"<\/a><\/li>";
     }).join('');
     var str="";
     str += "<div id='cm-msg-"+INDEX+"' class=\"chat-msg user\">";
@@ -342,10 +349,11 @@
   
   $(document).delegate(".chat-btn", "click", function() {
     var value = $(this).attr("chat-value");
+    var label = $(this).attr("chat-label");
     var name = $(this).html();
     $("#chat-input").attr("disabled", false);
     generate_message(name, 'self');
-    chatOptionsTapped(name, value);
+    chatOptionsTapped(name, value, label);
   })
   
   $("#chat-circle").click(function() {    
@@ -358,7 +366,6 @@
     $(".chat-box").toggle('scale');
   })
   
-
 
   // set the focus to the input box
       // Initialize the Amazon Cognito credentials provider
@@ -376,65 +383,113 @@
       initChat();
 
       function initChat() {
-          currentIntent = 'StartChat'
+          currentIntent = 'WelcomeIntent'
           var params = {
                   botAlias: '$LATEST',
-                  botName: 'BtoBBot',
+                  botName: 'JLLChatBot',
                   inputText: 'Welcome',
                   userId: lexUserId,
                   sessionAttributes: sessionAttributes
           };
           lexruntime.postText(params, function(err, data) {
-        if (err) {
-          console.log(err, err.stack);
-        }
-        if (data) {
-          // capture the sessionAttributes for the next cycle
-          sessionAttributes = data.sessionAttributes;
-          // show response and/or error/dialog status
-          showResponse(data);
-        }
-      });
+            if (err) {
+              console.log(err, err.stack);
+            }
+            if (data) {
+              // capture the sessionAttributes for the next cycle
+              sessionAttributes = data.sessionAttributes;
+              // show response and/or error/dialog status
+              showResponse(data);
+            }
+        });
       }
 
-      function chatOptionsTapped(text, type){
+      function chatOptionsTapped(text, type, slug){
           // disable input to show we're sending it
-
           var input;
-          if (type == 'category'){
-              input = 'CategorySelected'
-              sessionAttributes['category'] = text
+          if (type == 'field1'){
+             input = 'FieldOneSelected'
+             sessionAttributes['selectedField1'] = slug
           }
-          else if (type == 'subCategory'){
-              input = 'SubCategorySelected'
+          else if (type == 'field2'){
+             input = 'FieldTwoSelected'
+             sessionAttributes['selectedField2'] = slug
           }
-          else if (type == 'start'){
-              input = 'StartChat'
+          else if (type == 'field3'){
+             input = 'FieldThreeSelected'
+             sessionAttributes['selectedField3'] = slug
+          }
+          else if (slug == 'requestFreeProductP'){
+             input = 'JLLProductSelected'
+             sessionAttributes['selectedField4'] = slug
+             sessionAttributes['selectedProduct'] = text
+          }
+          else if (slug == 'trialProtocolDesigningP'){
+             input = 'JLLProductSelected'
+             sessionAttributes['selectedField3'] = slug
+             sessionAttributes['selectedProduct'] = text
+          }
+          else if (slug == 'productTrainingP'){
+             input = 'JLLProductSelected'
+             sessionAttributes['selectedField3'] = slug
+             sessionAttributes['selectedProduct'] = text
+          }
+          else if (slug == 'feedFormulationS'){
+             input = 'JLLSpeciesSelected'
+             sessionAttributes['selectedField3'] = slug
+             sessionAttributes['selectedSpecie'] = text
+          }
+          else if (slug == 'feedFormulationSS'){
+             input = 'JLLSubSpeciesSelected'
+             sessionAttributes['selectedField4'] = slug
+             sessionAttributes['selectedSubSpecie'] = text
+          }
+          else if (slug == 'labType'){
+             input = 'JLLLabTypeSelected'
+             sessionAttributes['selectedField4'] = slug
+             sessionAttributes['selectedLabType'] = text
+          }
+          else if (slug == 'purchaseOrderPO'){
+             input = 'JLLPOSelected'
+             sessionAttributes['selectedField3'] = slug
+             sessionAttributes['selectedPO'] = text
+          }
+          else if (slug == 'products'){
+             input = 'JLLProductSelected'
+             sessionAttributes['selectedField3'] = slug
+             sessionAttributes['selectedProduct'] = text
+          }
+          else if (type == 'submit'){
+            input = 'JLLSubmitForm'
+          }
+          else if ((type == 'cancel') || (type == 'startover')){
+            input = 'Welcome'
+          }
+          else if (type == 'exit'){
+            input = 'JLLExit'
           }
           else{
-            input = 'Exit'
+            input = 'Welcome'
           }
 
-
           var params = {
-        botAlias: '$LATEST',
-        botName: 'BtoBBot',
-        inputText: input,
-        userId: lexUserId,
-        sessionAttributes: sessionAttributes
-      };
-      console.log('Hello');
-      console.log(params);
+            botAlias: '$LATEST',
+            botName: 'JLLChatBot',
+            inputText: input,
+            userId: lexUserId,
+            sessionAttributes: sessionAttributes
+          };
+      
           lexruntime.postText(params, function(err, data) {
-        if (err) {
-          console.log(err, err.stack);
-        }
-        if (data) {
-          // capture the sessionAttributes for the next cycle
-          sessionAttributes = data.sessionAttributes;
-          // show response and/or error/dialog status
-          showResponse(data);
-        }
+          if (err) {
+            console.log(err, err.stack);
+          }
+          if (data) {
+            // capture the sessionAttributes for the next cycle
+            sessionAttributes = data.sessionAttributes;
+            // show response and/or error/dialog status
+            showResponse(data);
+          }
       });
       }
 
@@ -442,41 +497,291 @@
 
   function pushChat(text) {
     // if there is text to be sent...
-    var wisdomText = text;
-    if (wisdomText) {
+      var wisdomText = text;
+    //if (wisdomText) {
 
       // disable input to show we're sending it
       var wisdom = wisdomText;
-  
               var input;
-              if (currentIntent == 'SleepwellGetName'){
-                  input = 'NameSelected'
+              if (currentIntent == 'JLLProductSelected'){
+                    var field2 = sessionAttributes['selectedField2']
+                    var field3 = sessionAttributes['selectedField3']
+                    if (field2 == 'trialProtocolDesigning'){
+                      input = 'JLLTrialDateSelected'
+                      sessionAttributes['selectedField5'] = 'desiredTrialDate'
+                      sessionAttributes['desiredTrialDate'] = wisdom
+                      generate_message(wisdom, 'self');
+                    }
+                    else if (field3 == 'productTrainingP'){
+                      input = 'JLLTrainingDateSelected'
+                      sessionAttributes['selectedField4'] = 'desiredTrainingDate'
+                      sessionAttributes['desiredTrainingDate'] = wisdom
+                      generate_message(wisdom, 'self');
+                    }
+                    else if (field2 == 'product'){
+                      input = 'JLLCommentsSelected'
+                      sessionAttributes['selectedField4'] = 'qtyComment'
+                      sessionAttributes['qtyComment'] = wisdom
+                      generate_message(wisdom, 'self');
+                    }
+                    else{
+                      let isnum = /^\d+$/.test(wisdom);
+                      if (wisdom == ''){
+                        input = currentIntent
+                        wisdom = "Product quantity is mandatory"
+                        generate_message(wisdom, 'user');
+                      }
+                      else if (!isnum){
+                        input = currentIntent
+                        wisdom = "Please enter a valid quantity"
+                        generate_message(wisdom, 'user');
+                      }else{
+                        input = 'JLLQuantitySelected'
+                        sessionAttributes['selectedField5'] = 'qty'
+                        sessionAttributes['qty'] = wisdom
+                        generate_message(wisdom, 'self');
+                      }
+                    }
+                  }
+              else if (currentIntent == 'JLLQuantitySelected'){
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField6'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
               }
-              else if (currentIntent == 'SleepwellGetCompanyName'){
-                  input = 'CompanySelected'
+              else if (currentIntent == 'JLLTrialDateSelected'){
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField6'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
               }
-              else if (currentIntent == 'SleepwellGetContactNumber'){
-                  input = 'ContactNumberSelected'
+              else if (currentIntent == 'JLLTrainingDateSelected'){
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField5'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
               }
-              else if (currentIntent == 'SleepwellGetEmailId'){
-                  input = 'EmailSelected'
+              else if (currentIntent == 'FieldTwoSelected'){
+                  var field2 = sessionAttributes['selectedField2']
+                  if (field2 == 'requestArticleSubmission'){
+                    input = 'JLLArticleTitleSelected'
+                    sessionAttributes['selectedField3'] = 'articleTitle'
+                    sessionAttributes['articleTitle'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
+                  else if (field2 == 'others'){
+                    input = 'JLLTestRequiredSelected'
+                    sessionAttributes['selectedField4'] = 'testRequired'
+                    sessionAttributes['testRequired'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
+                  else if (field2 == 'becomePartner'){
+                    input = 'JLLFirmNameSelected'
+                    sessionAttributes['selectedField3'] = 'firmName'
+                    sessionAttributes['firmName'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
+                  else if ((field2 == 'marketingServices') || (field2 == 'technicalServices') || (field2 == 'rDServices') || (field2 == 'salesServices')){
+                    input = 'JLLFirmNameSelected'
+                    sessionAttributes['selectedField3'] = 'firmName'
+                    sessionAttributes['firmName'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
+                  else if ((field2 == 'inorganicPremix') || (field2 == 'organicPremix') || (field2 == 'blendofOrganicInorganic')){
+                    input = 'JLLTargetPriceSelected'
+                    sessionAttributes['selectedField3'] = 'targetPrice'
+                    sessionAttributes['targetPrice'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
+                  else{
+                    input = 'JLLVisitDateSelected'
+                    sessionAttributes['selectedField3'] = 'desiredVisitDate'
+                    sessionAttributes['desiredVisitDate'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
               }
-              else if (currentIntent == 'SleepwellGetCity'){
-                  input = 'CitySelected'
+              else if (currentIntent == 'JLLTargetPriceSelected'){
+                    input = 'JLLQTYRequiredMTSelected'
+                    sessionAttributes['selectedField4'] = 'qtyMT'
+                    sessionAttributes['qtyMT'] = wisdom
+                    generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLQTYRequiredMTSelected'){
+                    input = 'JLLFirmNameSelected'
+                    sessionAttributes['selectedField3'] = 'firmName'
+                    sessionAttributes['firmName'] = wisdom
+                    generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'FieldThreeSelected'){
+                var field3 = sessionAttributes['selectedField3']
+                if (field3 == 'helpToSetUpLabSOPs'){
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField4'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
+                }
+                else if (field3 == 'feedMaterialTesting'){
+                  input = 'JLLTestRequiredSelected'
+                  sessionAttributes['selectedField4'] = 'testRequired'
+                  sessionAttributes['testRequired'] = wisdom
+                  generate_message(wisdom, 'self');
+                }
+                else{
+                  input = 'JLLTrainingDateSelected'
+                  sessionAttributes['selectedField4'] = 'desiredTrainingDate'
+                  sessionAttributes['desiredTrainingDate'] = wisdom
+                  generate_message(wisdom, 'self');
+                }
+              }
+              else if (currentIntent == 'JLLSubSpeciesSelected'){
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField5'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLLabTypeSelected'){
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField5'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLTestRequiredSelected'){
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField5'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLPOSelected'){
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField4'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLArticleTitleSelected'){
+                  input = 'JLLTestRequiredSelected'
+                  sessionAttributes['selectedField4'] = 'testRequired'
+                  sessionAttributes['testRequired'] = wisdom
+                  generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLFirmNameSelected'){
+                input = 'JLLContactPersonSelected'
+                sessionAttributes['selectedField4'] = 'contactPerson'
+                sessionAttributes['contactPerson'] = wisdom
+                generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLContactPersonSelected'){
+                let isnum = /^\d+$/.test(wisdom);
+                  if (wisdom == ''){
+                    input = currentIntent
+                    wisdom = "Contact number is mandatory"
+                    generate_message(wisdom, 'user');
+                  }
+                  else if (wisdom.length < 10){
+                    input = currentIntent
+                    wisdom = "Contact number is invalid"
+                    generate_message(wisdom, 'user');
+                  }
+                  else if (!isnum){
+                    input = currentIntent
+                    wisdom = "Contact number is invalid"
+                    generate_message(wisdom, 'user');
+                  }
+                  else{
+                    input = 'JLLConfirmContactOTP'
+                    sessionAttributes['contactDetailsO'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
+              }
+              else if (currentIntent == 'JLLConfirmContactOTP'){
+                input = 'JLLOTPSelected'
+                //sessionAttributes['selectedField4'] = 'contactPerson'
+                sessionAttributes['otp'] = wisdom
+                generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLOTPSelected'){
+                var field2 = sessionAttributes['selectedField2']
+                if (field2 == 'becomePartner'){
+                  input = 'JLLConfirmContact'
+                  sessionAttributes['geography'] = wisdom
+                  generate_message(wisdom, 'self');
+                }
+                else{
+                  input = 'JLLCommentsSelected'
+                  sessionAttributes['selectedField4'] = 'qtyComment'
+                  sessionAttributes['qtyComment'] = wisdom
+                  generate_message(wisdom, 'self');
+                }
+              }
+              else if (currentIntent == 'JLLCommentsSelected'){
+                  let isnum = /^\d+$/.test(wisdom);
+                  if (wisdom == ''){
+                    input = currentIntent
+                    wisdom = "Contact number is mandatory"
+                    generate_message(wisdom, 'user');
+                  }
+                  else if (wisdom.length < 10){
+                    input = currentIntent
+                    wisdom = "Contact number is invalid"
+                    generate_message(wisdom, 'user');
+                  }
+                  else if (!isnum){
+                    input = currentIntent
+                    wisdom = "Contact number is invalid"
+                    generate_message(wisdom, 'user');
+                  }
+                  else{
+                    input = 'JLLConfirmContact'
+                    sessionAttributes['contactDetails'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
+              }
+              else if (currentIntent == 'JLLVisitDateSelected'){
+                    input = 'JLLPurposeVisitSelected'
+                    sessionAttributes['purposeVisit'] = wisdom
+                    generate_message(wisdom, 'self');
+              }
+              else if (currentIntent == 'JLLPurposeVisitSelected'){
+                let isnum = /^\d+$/.test(wisdom);
+                  if (wisdom == ''){
+                    input = currentIntent
+                    wisdom = "Contact number is mandatory"
+                    generate_message(wisdom, 'user');
+                  }
+                  else if (wisdom.length < 10){
+                    input = currentIntent
+                    wisdom = "Contact number is invalid"
+                    generate_message(wisdom, 'user');
+                  }
+                  else if (!isnum){
+                    input = currentIntent
+                    wisdom = "Contact number is invalid"
+                    generate_message(wisdom, 'user');
+                  }
+                  else{
+                    input = 'JLLConfirmContact'
+                    sessionAttributes['contactDetails'] = wisdom
+                    generate_message(wisdom, 'self');
+                  }
+              }
+              else if (currentIntent == 'JLLGeographySelected'){
+                    input = 'JLLConfirmContact'
+                    //sessionAttributes['contactDetails'] = wisdom
+                    generate_message(wisdom, 'self');
               }
               else{
                   input = 'StartChat'
+                  generate_message(wisdom, 'self');
               }
 
       // send it to the Lex runtime
       var params = {
         botAlias: '$LATEST',
-        botName: 'BtoBBot',
+        botName: 'JLLChatBot',
         inputText: input,
         userId: lexUserId,
         sessionAttributes: sessionAttributes
       };
-      generate_message(wisdom, 'self');
+      
       //showRequest(wisdom);
       lexruntime.postText(params, function(err, data) {
         if (err) {
@@ -493,22 +798,12 @@
         wisdomText.value = '';
         wisdomText.locked = false;
       });
-    }
+    //}
     // we always cancel form submission
     return false;
   }
 
-  function showRequest(daText) {
-    var conversationDiv = document.getElementById('conversation');
-    var requestPara = document.createElement("P");
-    requestPara.className = 'userRequest';
-    requestPara.appendChild(document.createTextNode(daText));
-    conversationDiv.appendChild(requestPara);
-    conversationDiv.scrollTop = conversationDiv.scrollHeight;
-  }
-
   function showError(daText) {
-
     var conversationDiv = document.getElementById('conversation');
     var errorPara = document.createElement("P");
     errorPara.className = 'lexError';
@@ -519,33 +814,168 @@
 
   function showResponse(lexResponse) {
         currentIntent = lexResponse.intentName;
-          if ((lexResponse.intentName == 'Welcome') || (lexResponse.intentName == 'SleepwellEndChat')){
-            var yesButton = { name: "Yes", type: 'start' } 
+          if (lexResponse.intentName == 'WelcomeIntent'){
+              var services = JSON.parse(lexResponse.sessionAttributes.services)
+              var i;
+              var buttons = []
+              for (i = 0; i < services.length; i++){
+                  var button = { name: services[i].value, type: 'field1', label: services[i].label} 
+                  buttons.push(button);
+              }
+              generate_button_message(lexResponse.message, buttons);
+          }
+          else if (lexResponse.intentName == 'FieldOneSelected'){
+              var services = JSON.parse(lexResponse.sessionAttributes.services)
+              var i;
+              var buttons = []
+              for (i = 0; i < services.length; i++){
+                var button = { name: services[i].value, type: 'field2', label: services[i].label} 
+                  buttons.push(button);
+              }
+              generate_button_message(lexResponse.message, buttons);
+          }
+          else if (lexResponse.intentName == 'FieldTwoSelected'){
+            var field2 = sessionAttributes['selectedField2']
+            if (field2 == 'veterinaryFarmVisit'){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+            if (field2 == 'requestArticleSubmission'){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+            if (field2 == 'others'){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+            if (field2 == 'becomePartner'){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+            if ((field2 == 'marketingServices') || (field2 == 'technicalServices') || (field2 == 'rDServices') || (field2 == 'salesServices')){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+            if ((field2 == 'inorganicPremix') || (field2 == 'organicPremix') || (field2 == 'blendofOrganicInorganic')){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+              var services = JSON.parse(lexResponse.sessionAttributes.services)
+              var i;
+              var buttons = []
+              for (i = 0; i < services.length; i++){
+                
+                if (field2 == 'trialProtocolDesigning'){
+                  services = JSON.parse(lexResponse.sessionAttributes.services)
+                  services = services[0].value
+                  var button = { name: services[i].productName, type: 'productName', label: 'trialProtocolDesigningP'} 
+                  buttons.push(button);
+                }
+                else if (field2 == 'productTraining'){
+                  services = JSON.parse(lexResponse.sessionAttributes.services)
+                  services = services[0].value
+                  var button = { name: services[i].productName, type: 'productName', label: 'productTrainingP'} 
+                  buttons.push(button);
+                }
+                else if (field2 == 'feedFormulation'){
+                  services = JSON.parse(lexResponse.sessionAttributes.services)
+                  services = services[0].value
+                  var button = { name: services[i].speciesName, type: 'speciesName', label: 'feedFormulationS'} 
+                  buttons.push(button);
+                }
+                else if (field2 == 'purchaseOrder'){
+                  services = JSON.parse(lexResponse.sessionAttributes.services)
+                  services = services[0].value
+                  var button = { name: services[i].orderId, type: 'orderId', label: 'purchaseOrderPO'} 
+                  buttons.push(button);
+                }
+                else if (field2 == 'delivery'){
+                  services = JSON.parse(lexResponse.sessionAttributes.services)
+                  services = services[0].value
+                  var button = { name: services[i].orderId, type: 'orderId', label: 'purchaseOrderPO'} 
+                  buttons.push(button);
+                }
+                else if (field2 == 'product'){
+                  services = JSON.parse(lexResponse.sessionAttributes.services)
+                  services = services[0].value
+                  var button = { name: services[i].productName, type: 'productName', label: 'products'} 
+                  buttons.push(button);
+                }
+                else{
+                  var button = { name: services[i].value, type: 'field3', label: services[i].label} 
+                  buttons.push(button);
+                }
+              }
+              generate_button_message(lexResponse.message, buttons);
+          }
+          else if (lexResponse.intentName == 'FieldThreeSelected'){
+            var field3 = sessionAttributes['selectedField3']
+            if (field3 == 'trainingToLabPersonnel'){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+            if (field3 == 'helpToSetUpLabSOPs'){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+            if (field3 == 'feedMaterialTesting'){
+              generate_message(lexResponse.message, 'user');
+              return;
+            }
+            var services = JSON.parse(lexResponse.sessionAttributes.services)
+            if (field3 == 'helpToSetUpLab'){
+              var i;
+              var buttons = []
+              for (i = 0; i < services.length; i++){
+                var button = { name: services[i].value, type: 'labType', label: 'labType'} 
+                  buttons.push(button);
+              }
+            }
+            else{
+            services = services[0].value
+              var i;
+              var buttons = []
+              for (i = 0; i < services.length; i++){
+                var button = { name: services[i].productName, type: 'productName', label: 'requestFreeProductP'} 
+                  buttons.push(button);
+              }
+            }
+              generate_button_message(lexResponse.message, buttons);
+          }
+          else if (lexResponse.intentName == 'JLLSpeciesSelected'){
+            var services = JSON.parse(lexResponse.sessionAttributes.services)
+              var i;
+              var buttons = []
+              for (i = 0; i < services.length; i++){
+                var button = { name: services[i].speciesName, type: 'subSpeciesName', label: 'feedFormulationSS'} 
+                  buttons.push(button);
+              }
+              generate_button_message(lexResponse.message, buttons);
+          }
+          else if (lexResponse.intentName == 'JLLConfirmContact'){
+            var yesButton = { name: "Yes", type: 'submit' } 
+            var noButton = { name: "No", type: 'cancel' } 
+            var buttons = [yesButton, noButton]
+            generate_button_message(lexResponse.message, buttons);
+          }
+          else if (lexResponse.intentName == 'JLLSubmitForm'){
+            var yesButton = { name: "Yes", type: 'startover' } 
             var noButton = { name: "No", type: 'exit' } 
             var buttons = [yesButton, noButton]
             generate_button_message(lexResponse.message, buttons);
           }
-          else if (lexResponse.intentName == 'StartChat'){
-              var categories = JSON.parse(lexResponse.sessionAttributes.categories)
-              console.log(categories)
-              var i;
-              var buttons = []
-              for (i = 0; i < categories.length; i++){
-                  var button = { name: categories[i].name, type: 'category' } 
-                  buttons.push(button);
-              }
-              generate_button_message(lexResponse.message, buttons);
+          else if (lexResponse.intentName == 'JLLOTPSelected'){
+            var flag = lexResponse.sessionAttributes.isotpvalid
+            if (flag == 0){
+              currentIntent = 'JLLConfirmContactOTP'
+            }
+            generate_message(lexResponse.message, 'user');
           }
-          else if (lexResponse.intentName == 'SleepwellGetSubCategories'){
-              var subCategories = JSON.parse(lexResponse.sessionAttributes.sub_categories)
-              console.log(subCategories)
-              var i;
-              var buttons = []
-              for (i = 0; i < subCategories.length; i++){
-                  var button = { name: subCategories[i].name, type: 'subCategory' } 
-                  buttons.push(button);
-              }
-              generate_button_message(lexResponse.message, buttons);
+          else if ((lexResponse.intentName == 'Welcome') || (lexResponse.intentName == 'SleepwellEndChat')){
+            var yesButton = { name: "Yes", type: 'start' } 
+            var noButton = { name: "No", type: 'exit' } 
+            var buttons = [yesButton, noButton]
+            generate_button_message(lexResponse.message, buttons);
           }
           else{
             generate_message(lexResponse.message, 'user');
@@ -556,6 +986,4 @@
 </script>
     
 </body>
-
-
 </html>
