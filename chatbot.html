@@ -410,55 +410,65 @@
           if (type == 'field1'){
              input = 'FieldOneSelected'
              sessionAttributes['selectedField1'] = slug
+             document.getElementById('chat-input').type = 'text';
           }
           else if (type == 'field2'){
              input = 'FieldTwoSelected'
              sessionAttributes['selectedField2'] = slug
+             document.getElementById('chat-input').type = 'text';
           }
           else if (type == 'field3'){
              input = 'FieldThreeSelected'
              sessionAttributes['selectedField3'] = slug
+             document.getElementById('chat-input').type = 'text';
           }
           else if (slug == 'requestFreeProductP'){
              input = 'JLLProductSelected'
              sessionAttributes['selectedField4'] = slug
              sessionAttributes['selectedProduct'] = text
+             document.getElementById('chat-input').type = 'number';
           }
           else if (slug == 'trialProtocolDesigningP'){
              input = 'JLLProductSelected'
              sessionAttributes['selectedField3'] = slug
              sessionAttributes['selectedProduct'] = text
+             document.getElementById('chat-input').type = 'date';
           }
           else if (slug == 'productTrainingP'){
              input = 'JLLProductSelected'
              sessionAttributes['selectedField3'] = slug
              sessionAttributes['selectedProduct'] = text
-	     document.getElementById('chat-input').type = 'date';  
+             document.getElementById('chat-input').type = 'date';
           }
           else if (slug == 'feedFormulationS'){
              input = 'JLLSpeciesSelected'
              sessionAttributes['selectedField3'] = slug
              sessionAttributes['selectedSpecie'] = text
+             document.getElementById('chat-input').type = 'text';
           }
           else if (slug == 'feedFormulationSS'){
              input = 'JLLSubSpeciesSelected'
              sessionAttributes['selectedField4'] = slug
              sessionAttributes['selectedSubSpecie'] = text
+             document.getElementById('chat-input').type = 'text';
           }
           else if (slug == 'labType'){
              input = 'JLLLabTypeSelected'
              sessionAttributes['selectedField4'] = slug
              sessionAttributes['selectedLabType'] = text
+             document.getElementById('chat-input').type = 'text';
           }
           else if (slug == 'purchaseOrderPO'){
              input = 'JLLPOSelected'
              sessionAttributes['selectedField3'] = slug
              sessionAttributes['selectedPO'] = text
+             document.getElementById('chat-input').type = 'text';
           }
           else if (slug == 'products'){
              input = 'JLLProductSelected'
              sessionAttributes['selectedField3'] = slug
              sessionAttributes['selectedProduct'] = text
+             document.getElementById('chat-input').type = 'text';
           }
           else if (type == 'submit'){
             input = 'JLLSubmitForm'
@@ -512,12 +522,14 @@
                       sessionAttributes['selectedField5'] = 'desiredTrialDate'
                       sessionAttributes['desiredTrialDate'] = wisdom
                       generate_message(wisdom, 'self');
+                      document.getElementById('chat-input').type = 'text';
                     }
                     else if (field3 == 'productTrainingP'){
                       input = 'JLLTrainingDateSelected'
                       sessionAttributes['selectedField4'] = 'desiredTrainingDate'
                       sessionAttributes['desiredTrainingDate'] = wisdom
                       generate_message(wisdom, 'self');
+                      document.getElementById('chat-input').type = 'text';
                     }
                     else if (field2 == 'product'){
                       input = 'JLLCommentsSelected'
@@ -541,6 +553,7 @@
                         sessionAttributes['selectedField5'] = 'qty'
                         sessionAttributes['qty'] = wisdom
                         generate_message(wisdom, 'self');
+                        document.getElementById('chat-input').type = 'text';
                       }
                     }
                   }
@@ -549,18 +562,21 @@
                   sessionAttributes['selectedField6'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
               }
               else if (currentIntent == 'JLLTrialDateSelected'){
                   input = 'JLLCommentsSelected'
                   sessionAttributes['selectedField6'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
               }
               else if (currentIntent == 'JLLTrainingDateSelected'){
                   input = 'JLLCommentsSelected'
                   sessionAttributes['selectedField5'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
               }
               else if (currentIntent == 'FieldTwoSelected'){
                   var field2 = sessionAttributes['selectedField2']
@@ -593,12 +609,14 @@
                     sessionAttributes['selectedField3'] = 'targetPrice'
                     sessionAttributes['targetPrice'] = wisdom
                     generate_message(wisdom, 'self');
+
                   }
                   else{
                     input = 'JLLVisitDateSelected'
                     sessionAttributes['selectedField3'] = 'desiredVisitDate'
                     sessionAttributes['desiredVisitDate'] = wisdom
                     generate_message(wisdom, 'self');
+                    document.getElementById('chat-input').type = 'text';
                   }
               }
               else if (currentIntent == 'JLLTargetPriceSelected'){
@@ -620,6 +638,7 @@
                   sessionAttributes['selectedField4'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
                 }
                 else if (field3 == 'feedMaterialTesting'){
                   input = 'JLLTestRequiredSelected'
@@ -639,24 +658,28 @@
                   sessionAttributes['selectedField5'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
               }
               else if (currentIntent == 'JLLLabTypeSelected'){
                   input = 'JLLCommentsSelected'
                   sessionAttributes['selectedField5'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
               }
               else if (currentIntent == 'JLLTestRequiredSelected'){
                   input = 'JLLCommentsSelected'
                   sessionAttributes['selectedField5'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
               }
               else if (currentIntent == 'JLLPOSelected'){
                   input = 'JLLCommentsSelected'
                   sessionAttributes['selectedField4'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
               }
               else if (currentIntent == 'JLLArticleTitleSelected'){
                   input = 'JLLTestRequiredSelected'
@@ -691,6 +714,7 @@
                     input = 'JLLConfirmContactOTP'
                     sessionAttributes['contactDetailsO'] = wisdom
                     generate_message(wisdom, 'self');
+                    document.getElementById('chat-input').type = 'number';
                   }
               }
               else if (currentIntent == 'JLLConfirmContactOTP'){
@@ -698,6 +722,7 @@
                 //sessionAttributes['selectedField4'] = 'contactPerson'
                 sessionAttributes['otp'] = wisdom
                 generate_message(wisdom, 'self');
+                document.getElementById('chat-input').type = 'text';
               }
               else if (currentIntent == 'JLLOTPSelected'){
                 var field2 = sessionAttributes['selectedField2']
@@ -711,6 +736,7 @@
                   sessionAttributes['selectedField4'] = 'qtyComment'
                   sessionAttributes['qtyComment'] = wisdom
                   generate_message(wisdom, 'self');
+                  document.getElementById('chat-input').type = 'number';
                 }
               }
               else if (currentIntent == 'JLLCommentsSelected'){
@@ -734,6 +760,7 @@
                     input = 'JLLConfirmContact'
                     sessionAttributes['contactDetails'] = wisdom
                     generate_message(wisdom, 'self');
+                    document.getElementById('chat-input').type = 'text';
                   }
               }
               else if (currentIntent == 'JLLVisitDateSelected'){
@@ -855,10 +882,12 @@
             }
             if ((field2 == 'marketingServices') || (field2 == 'technicalServices') || (field2 == 'rDServices') || (field2 == 'salesServices')){
               generate_message(lexResponse.message, 'user');
+
               return;
             }
             if ((field2 == 'inorganicPremix') || (field2 == 'organicPremix') || (field2 == 'blendofOrganicInorganic')){
               generate_message(lexResponse.message, 'user');
+              document.getElementById('chat-input').type = 'number';
               return;
             }
               var services = JSON.parse(lexResponse.sessionAttributes.services)
@@ -913,6 +942,7 @@
             var field3 = sessionAttributes['selectedField3']
             if (field3 == 'trainingToLabPersonnel'){
               generate_message(lexResponse.message, 'user');
+              document.getElementById('chat-input').type = 'date';
               return;
             }
             if (field3 == 'helpToSetUpLabSOPs'){
