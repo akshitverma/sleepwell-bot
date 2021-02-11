@@ -156,7 +156,7 @@
   border:none;
   border-radius:50%;
   color:#ffffff;
-  width:35px;
+  width:40px;
   height:35px;  
 }
 .chat-logs {
@@ -624,6 +624,7 @@
                     sessionAttributes['selectedField4'] = 'qtyMT'
                     sessionAttributes['qtyMT'] = wisdom
                     generate_message(wisdom, 'self');
+                    document.getElementById('chat-input').type = 'text';
               }
               else if (currentIntent == 'JLLQTYRequiredMTSelected'){
                     input = 'JLLFirmNameSelected'
